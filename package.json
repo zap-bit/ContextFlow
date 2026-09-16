@@ -1,0 +1,10 @@
+{
+  "name": "contextflow",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check src/content/main.js && node --check src/content/app.js && node --check src/core/ConversationAnalyzer.js && node --check src/platforms/chatgpt/ChatGPTAdapter.js && node --check src/storage/LocalStorageManager.js && node --check src/options.js && node --check src/ui/Overlay.js"
+  }
+}
