@@ -15,6 +15,7 @@ async function refresh() {
   const settings = await storage.settings();
   if (!settings.healthEnabled) { overlay.hide(); return; }
   analysis = new ConversationAnalyzer({ sensitivity: settings.sensitivity }).analyze(adapter.getConversationMessages());
+  analysis.diagnostics = adapter.getConversationDiagnostics();
   overlay.reveal(); overlay.showHealth(analysis);
 }
 async function beginCompression() {
