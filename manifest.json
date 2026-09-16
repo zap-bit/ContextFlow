@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "ContextFlow",
+  "version": "0.1.0",
+  "description": "A local-first conversation efficiency layer for ChatGPT.",
+  "permissions": [
+    "storage"
+  ],
+  "background": {
+    "service_worker": "src/background/serviceWorker.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ],
+      "js": [
+        "src/content/main.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "ContextFlow"
+  },
+  "options_page": "options.html",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "src/content/app.js",
+        "src/core/*.js",
+        "src/platforms/chatgpt/*.js",
+        "src/storage/*.js",
+        "src/ui/*.js"
+      ],
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://chat.openai.com/*"
+      ]
+    }
+  ]
+}
