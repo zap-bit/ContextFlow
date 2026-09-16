@@ -5,6 +5,7 @@ import { ConversationAnalyzer } from "../src/core/ConversationAnalyzer.js";
 import { validateCompression, formatContinuationContext } from "../src/core/Compression.js";
 import { PromptAnalyzer } from "../src/core/PromptAnalyzer.js";
 import { MessageAccumulator } from "../src/platforms/chatgpt/ChatGPTAdapter.js";
+import { DEFAULT_SETTINGS, LocalStorageManager } from "../src/storage/LocalStorageManager.js";
 
 const estimator = new TokenEstimator();
 test("token estimator handles empty, prose, markdown, code, unicode, and large pasted text", () => {
@@ -30,6 +31,20 @@ test("message accumulator retains observed turns through DOM virtualization and 
   const observed = accumulator.merge("chat-a", [{ id: "assistant-2", role: "assistant", text: "Latest reply" }]);
   assert.equal(observed.length, 3);
   assert.equal(accumulator.merge("chat-b", [{ id: "user-2", role: "user", text: "New request" }]).length, 1);
+});
+test("local storage manager stores only supported settings", async () => {
+  const values = {};
+  const storageArea = {
+    async get(keys) { return keys === null ? { ...values } : Object.fromEntries(Object.keys(keys).filter((key) => key in values).map((key) => [key, values[key]])); },
+    async set(settings) { Object.assign(values, settings); },
+    async clear() { Object.keys(values).forEach((key) => delete values[key]); }
+  };
+  const storage = new LocalStorageManager(storageArea);
+  await storage.saveSettings({ healthEnabled: false, unexpected: "conversation text" });
+  assert.deepEqual(await storage.settings(), { ...DEFAULT_SETTINGS, healthEnabled: false });
+  assert.deepEqual(await storage.getAll(), { healthEnabled: false });
+  await storage.clear();
+  assert.deepEqual(await storage.settings(), DEFAULT_SETTINGS);
 });
 test("health recognizes long, rapid-growth, repetitive, and huge-message signals", () => {
   const repeated = "We need a secure local Chrome extension with no backend and user controlled continuation. ".repeat(75);
