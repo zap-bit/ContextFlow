@@ -40,10 +40,13 @@ async function startNew(context) {
   stopObserving = adapter.observeConversationChanges(refresh);
   window.addEventListener("pagehide", () => stopObserving?.(), { once: true });
   const composerWatcher = setInterval(async () => {
-    const settings = await storage.settings(); if (!settings.promptCoachEnabled || !adapter.isSupported()) return;
+    const settings = await storage.settings(); if (!settings.promptCoachEnabled || !settings.suggestionsEnabled || !adapter.isSupported()) return;
     const input = adapter.getInputElement(); if (!input || input.dataset.contextflowCoach) return;
     input.dataset.contextflowCoach = "true";
     input.addEventListener("input", () => { const text = input instanceof HTMLTextAreaElement ? input.value : input.textContent; const suggestions = new PromptAnalyzer().analyze(text); if (suggestions.length) overlay.showPromptCoach(suggestions); });
   }, 1500);
   window.addEventListener("pagehide", () => clearInterval(composerWatcher), { once: true });
-})();
+})().catch((error) => {
+  console.error("ContextFlow initialization failed.", error);
+  overlay?.showStartupError();
+});

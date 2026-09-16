@@ -7,6 +7,6 @@ export class ConversationAnalyzer {
   analyze(messages) {
     const enriched = messages.map((message) => ({ ...message, tokens: this.estimator.estimate(message.text) }));
     const totalTokens = enriched.reduce((sum, message) => sum + message.tokens, 0);
-    return { messages: enriched, totalTokens, repetition: this.repetition.score(enriched), health: this.scorer.score({ messages: enriched, totalTokens, repetition: this.repetition.score(enriched) }) };
+    return { messageCount: enriched.length, messages: enriched, totalTokens, repetition: this.repetition.score(enriched), health: this.scorer.score({ messages: enriched, totalTokens, repetition: this.repetition.score(enriched) }) };
   }
 }

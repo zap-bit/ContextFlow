@@ -15,7 +15,7 @@ test("token estimator handles empty, prose, markdown, code, unicode, and large p
 });
 test("health stays healthy for short small conversations", () => {
   const result = new ConversationAnalyzer().analyze([{ text: "hello" }, { text: "hi" }]);
-  assert.equal(result.health.state, "healthy"); assert.equal(result.health.recommendCompression, false);
+  assert.equal(result.messageCount, 2); assert.equal(result.health.state, "healthy"); assert.equal(result.health.recommendCompression, false);
 });
 test("health recognizes long, rapid-growth, repetitive, and huge-message signals", () => {
   const repeated = "We need a secure local Chrome extension with no backend and user controlled continuation. ".repeat(75);
